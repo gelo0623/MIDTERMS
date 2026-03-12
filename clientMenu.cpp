@@ -93,7 +93,7 @@ int main () {
     addAccount("1234567890123456", "encodedPIN: 1234", 10000, "BDO", "Local");
     logTransaction("Deposit", 5000, 0);
     
-    clientMenu();
+    login();
     
     return 0;
 }
@@ -102,6 +102,22 @@ int main () {
 
 //where to do code
 int login() {
+    int role;
+
+    cout << "======= WELCOME TO ATM SYSTEM =======" << endl;
+    cout << "[1] Client Menu" << endl;
+    cout << "[2] Admin Menu" << endl;
+    cout << "Select Role: ";
+    cin >> role;
+    cout << "=====================================" << endl;
+
+    if (role == 1){
+        clientMenu();
+    }
+    else if (role == 2){
+        adminMenu();
+    }
+    
     
     return 0;
 }
