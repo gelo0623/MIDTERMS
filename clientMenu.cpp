@@ -156,28 +156,27 @@ void clientMenu () {
 
     do{
 
-            cout << "===== CLIENT MENU =====\n";
-            cout << "\nBank: " << userBanks[accountIndex];
-            cout << "\nAccount Type: " << accountTypes[accountIndex];
-            cout << "\nCurrent Balance: PHP*******" << endl;
-
-            cout << "\n1. Check Balance.\n";
-            cout << "2. Withdraw.\n";
-            cout << "3. Transfer.\n";
-            cout << "4. View Transaction History.\n" << endl;
-
-            cout << "5. Change your PIN number.\n";
-            cout << "6. Logout\n" << endl;
-
+            cout << "===== CLIENT MENU =====" << endl;
+            cout << "Bank: " << userBanks[accountIndex] << endl;
+            cout << "Account Type: " << accountTypes[accountIndex] << endl;
+            cout << "Current Balance: "<< balances[accountIndex] << endl;
+            cout << "=======================\n" << endl;
+            
+            cout << "1. Check Balance." << endl;
+            cout << "2. Withdraw." << endl;
+            cout << "3. Transfer." << endl;
+            cout << "4. View Transaction History." << endl;
+            cout << "5. Change your PIN number." << endl;
+            cout << "6. Logout" << endl;
             cout << "Enter your choice: ";
             cin >> choice;
 
                 if(choice == 1){
 
-                    cout << "===== BALANCE CHECK PANEL =====\n";
-                    cout << "\nBalance: " << balances[accountIndex] << endl;
+                    cout << "===== BALANCE CHECK PANEL =====" << endl;
+                    cout << "Balance: " << balances[accountIndex] << endl;
 
-                    cout << "\nPress any key to continue another transaction: ";
+                    cout << "Press any key to continue another transaction: ";
                     string temp;
                     cin >> temp;
 
@@ -185,16 +184,16 @@ void clientMenu () {
 
                 if(choice == 2){
 
-                    cout << "===== WITHDRAWAL PANEL =====\n" << endl;
+                    cout << "===== WITHDRAWAL PANEL =====" << endl;
 
                 int wdrawAmount1, wdrawAmount2, amount = 0;
 
-                    cout << "1. 500Php";
-                    cout << "      2. 1000Php\n";
-                    cout << "3. 5,000Php";
-                    cout << "    4. 10,000Php\n";
-                    cout << "   5. Enter an Amount." << endl;
-                    cout << "\nEnter your choice (1-5): ";
+                    cout << "[1] 500Php" << endl;
+                    cout << "[2] 1000Php" << endl;
+                    cout << "[3] 5,000Php" << endl;
+                    cout << "[4] 10,000Php" << endl;
+                    cout << "[5] Enter an Amount." << endl;
+                    cout << "Enter your choice (1-5): ";
                     cin >> wdrawAmount1;
 
                         if(wdrawAmount1 == 1){
