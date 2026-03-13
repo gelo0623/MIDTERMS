@@ -18,7 +18,7 @@ int billCount[NUM_DENOMINATIONS] = {500, 500}; // Current count of each
 
 
 // Admin
-vector<string> adminUsers = {"Mark Angelo C. Panis | Benedict B. Eborde | Lee Mhiguel Ferrer"};
+vector<string> adminUsers = {"admin"};
 
 
 // Part 1 c
@@ -89,8 +89,6 @@ string encodeString(string plain){
 bool verifyPIN(string input, string stored){
     return encodeString(input) == stored;
 }
-
-
 
 
 // Main function
@@ -198,95 +196,147 @@ void clientMenu () {
                 }
 
                 if(choice == 2){
+                    
+            
+            cout << "===== WITHDRAWAL PANEL =====\n" << endl;
+            
+            int wdrawAmount1, wdrawAmount2, amount = 0;
+            
+            cout << "[1] 500Php" << endl;
+            cout << "[2] 1000Php" << endl;
+            cout << "[3] 5,000Php";
+            cout << "[4] 10,000Php\n";
+            cout << "[5] Enter an Amount." << endl;
+            cout << "===========================" << endl;
+            cout << "Enter your choice (1-5): ";
+            cin >> wdrawAmount1;
+            
+            
+            if(wdrawAmount1 == 1) amount = 500;
+            else if(wdrawAmount1 == 2) amount = 1000;
+            else if(wdrawAmount1 == 3) amount = 5000;
+            else if(wdrawAmount1 == 4) amount = 10000;
+            else if(wdrawAmount1 == 5){
+                
+                cout << "\nEnter amount to Withdraw: ";
+                cin >> wdrawAmount2;
+                
+                amount = wdrawAmount2;
+    }
 
-                    cout << "===== WITHDRAWAL PANEL =====\n" << endl;
+    // Determine bank index fee and daily limit
+    int bankIndex = -1;
+    for(int i = 0; i < NUM_BANKS; i++){
+        if(userBanks[accountIndex] == bankNames[i]){
+            bankIndex = i;
+            break;
+        }
+    }
+    
+    if(bankIndex == -1){
+        cout << "Bank not recognized.\n";
+        continue;
+    }
+    
+    double fee = 0;
+    if(accountTypes[accountIndex] == "Local") fee = localFees[bankIndex];
+    else fee = intlFees[bankIndex];
 
-                int wdrawAmount1, wdrawAmount2, amount = 0;
+    double totalDeduction = amount + fee;
 
-                    cout << "1. 500Php";
-                    cout << "      2. 1000Php\n";
-                    cout << "3. 5,000Php";
-                    cout << "    4. 10,000Php\n";
-                    cout << "   5. Enter an Amount." << endl;
-                    cout << "\nEnter your choice (1-5): ";
-                    cin >> wdrawAmount1;
+    // Check balance
+    if(totalDeduction > balances[accountIndex]){
+        cout << "\nInsufficient balance including fees.\n";
+        continue;
+    }
 
-                        if(wdrawAmount1 == 1){
-                            amount = 500;
-                        }
-                        else if(wdrawAmount1 == 2){
-                            amount = 1000;
-                        }
-                        else if(wdrawAmount1 == 3){
-                            amount = 5000;
-                        }
-                        else if(wdrawAmount1 == 4){
-                            amount = 10000;
-                        }
-                        else if(wdrawAmount1 == 5){
-                            cout << "\nEnter amount to Withdraw: ";
-                            cin >> wdrawAmount2;
-                            amount = wdrawAmount2;
-                        }
+    // Check daily limit
+    if(amount > dailyLimits[bankIndex]){
+        cout << "\nWithdrawal exceeds daily limit of " << dailyLimits[bankIndex] << " PHP.\n";
+        continue;
+    }
 
-                    if(amount > balances[accountIndex]){
-                        cout << "\nSorry, but you do not have enough Balance.\n";
-                        continue;
-                    }
+    // Check ATM cash availability
+    int totalCashAvailable = 0;
+    for(int i = 0; i < NUM_DENOMINATIONS; i++) totalCashAvailable += denominations[i] * billCount[i];
+    if(amount > totalCashAvailable){
+        cout << "\nATM does not have sufficient cash.\n";
+        continue;
+    }
 
-                    balances[accountIndex] -= amount;
-                    logTransaction("Withdrawal", amount, 0);
+    // Deduct amount and fee
+    balances[accountIndex] -= totalDeduction;
+    logTransaction("Withdrawal", amount, fee);
 
-                        cout << "Please Wait..." << endl;
-                        cout << "\nCollect your cash: PHP " << amount << endl;
+    cout << "Please Wait..." << endl;
+    cout << "\nCollect your cash: PHP " << amount << endl;
+    cout << "Fee deducted: PHP " << fee << endl;
 
-                        cout << "\nPress any key to continue: ";
-                        string temp;
-                        cin >> temp;
+    time_t now = time(0);
+    cout << "Transaction time: " << ctime(&now);
 
-                }
+    cout << "\nPress any key to continue: ";
+    string temp;
+    cin >> temp;
+}
+
+
 
                 if(choice == 3){
 
-                    string receiver;
-                    double amount;
+    string receiver;
+    double amount;
 
-                        cout << "===== TRANSFER PANEL =====\n";
+    cout << "===== TRANSFER PANEL =====\n";
+    cout << "Enter receipient card number: ";
+    cin >> receiver;
 
-                        cout << "Enter receipient card number: ";
-                        cin >> receiver;
-                        
-                        now = time(0);
-                    cout << "Checked at: " << ctime(&now);
+    int receiverIndex = -1;
+    for(int i = 0; i < cardNumbers.size(); i++){
+        if(cardNumbers[i] == receiver){
+            receiverIndex = i;
+            break;
+        }
+    }
 
-                        int receiverIndex = -1;
+    if(receiverIndex == -1){
+        cout << "Sorry, Recipient not found.\n";
+        continue;
+    }
 
-                        for(int i = 0; i < cardNumbers.size(); i++){
-                            if(cardNumbers[i] == receiver){
-                                receiverIndex = i;
-                                break;
-                            }
-                        }
+    cout << "Enter amount to transfer: ";
+    cin >> amount;
 
-                        if(receiverIndex == -1){
-                            cout << "Sorry, Recipient not found.\n";
-                            continue;
-                        }
+    // Determine fee: local vs international
+    int senderBankIndex = -1;
+    int receiverBankIndex = -1;
+    for(int i = 0; i < NUM_BANKS; i++){
+        if(userBanks[accountIndex] == bankNames[i]) senderBankIndex = i;
+        if(userBanks[receiverIndex] == bankNames[i]) receiverBankIndex = i;
+    }
 
-                        cout << "Enter amount to transfer: ";
-                        cin >> amount;
+    double fee = 0;
+    if(senderBankIndex != -1 && receiverBankIndex != -1){
+        if(senderBankIndex == receiverBankIndex) fee = localFees[senderBankIndex];
+        else fee = intlFees[senderBankIndex];
+    }
 
-                        if(amount > balances[accountIndex]){
-                            cout << "Insufficient balance.\n";
-                            continue;
-                        }
+    double totalDeduction = amount + fee;
+    if(totalDeduction > balances[accountIndex]){
+        cout << "Insufficient balance including transfer fee.\n";
+        continue;
+    }
 
-                        balances[accountIndex] -= amount;
-                        balances[receiverIndex] += amount;
+    balances[accountIndex] -= totalDeduction;
+    balances[receiverIndex] += amount;
+    logTransaction("Transfer", amount, fee);
 
-                        logTransaction("Transfer", amount, 0);
-                        cout << "\nTransfered successfully.\n";
-                }
+    time_t now = time(0);
+    cout << "Transfer successful!\n";
+    cout << "Amount: PHP " << amount << endl;
+    cout << "Fee: PHP " << fee << endl;
+    cout << "Transaction time: " << ctime(&now);
+}
 
                 if(choice == 4){
 
@@ -299,9 +349,6 @@ void clientMenu () {
                         for(int i = 0; i < transactionTypes.size(); i++){
                             cout << transactionTypes[i] << " | Amount: " << transactionAmounts[i] << " | Fee: " << transactionFees[i] << " | Count: " << transactionQuantities[i] << endl;
                         }
-                        
-                        now = time(0);
-                    cout << "Checked at: " << ctime(&now);
 
                         cout << "\nPress any key to continue: ";
                         string temp;
@@ -327,9 +374,6 @@ void clientMenu () {
                     encodedPINs[accountIndex] = encodeString(newPIN);
 
                     cout << "\nSuccessfully changed your PIN number.\n";
-                    
-                    now = time(0);
-                    cout << "Checked at: " << ctime(&now);
 
                 }
 
@@ -343,7 +387,6 @@ void clientMenu () {
 
 void adminMenu () {
     int choice;
-    string adminPasscode = "6767";
     
     do {
         cout << "======== ADMIN MENU ========" << endl;
@@ -355,8 +398,7 @@ void adminMenu () {
         cout << "[6] Change Admin Passcode" << endl;
         cout << "[7] View list of Admin Users" << endl;
         cout << "[8] Reset Account Password" << endl;
-        cout << "[9] Return to Login Menu" << endl;
-        cout << "[10] End Program" << endl;
+        cout << "[9] Exit" << endl;
         cout << "Select Choice: ";
         cin >> choice;
         cout << "============================" << endl;
@@ -464,6 +506,7 @@ void adminMenu () {
         }
 
         else if (choice == 6) {
+            string adminPasscode = "6767";
             string currentPass, newPass;
 
 
@@ -516,13 +559,9 @@ void adminMenu () {
             }
 
         }
-        else if (choice == 9){
-            login();
-        }
 
 
     
-    } while (choice != 10);
-    cout << "Ending Program, Goodbye!" << endl;
+    } while (choice != 9);
     
 }
