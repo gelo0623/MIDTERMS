@@ -17,6 +17,10 @@ int denominations[NUM_DENOMINATIONS] = {500, 1000};
 int billCount[NUM_DENOMINATIONS] = {500, 500}; // Current count of each 
 
 
+// Admin
+vector<string> adminUsers = {"Mark Angelo C. Panis | Benedict B. Eborde | Lee Mhiguel Ferrer"};
+
+
 // Part 1 c
 vector<string> cardNumbers;
 vector<string> encodedPINs;     
@@ -87,6 +91,8 @@ bool verifyPIN(string input, string stored){
 }
 
 
+
+
 // Main function
 int main () {
     
@@ -128,7 +134,7 @@ int login() {
 
 void clientMenu () {
 
-     string card, pin;
+    string card, pin;
 
     cout << "\nInsert your Card Number: ";
     cin >> card;
@@ -159,19 +165,18 @@ void clientMenu () {
 
     do{
 
-            cout << "===== CLIENT MENU =====\n";
-            cout << "\nBank: " << userBanks[accountIndex];
-            cout << "\nAccount Type: " << accountTypes[accountIndex];
-            cout << "\nCurrent Balance: PHP*******" << endl;
+            cout << "===== CLIENT MENU =====" << endl;
+            cout << "Bank: " << userBanks[accountIndex] << endl;
+            cout << "Account Type: " << accountTypes[accountIndex] << endl;
+            cout << "Current Balance: " << balances[accountIndex] << endl;
 
-            cout << "\n1. Check Balance.\n";
-            cout << "2. Withdraw.\n";
-            cout << "3. Transfer.\n";
-            cout << "4. View Transaction History.\n" << endl;
-
-            cout << "5. Change your PIN number.\n";
-            cout << "6. Logout\n" << endl;
-
+            cout << "1. Check Balance." << endl;
+            cout << "2. Withdraw." << endl;
+            cout << "3. Transfer." << endl;
+            cout << "4. View Transaction History." << endl;
+            cout << "5. Change your PIN number." << endl;
+            cout << "6. Logout" << endl;
+            cout << "======================" << endl;
             cout << "Enter your choice: ";
             cin >> choice;
 
@@ -323,6 +328,7 @@ void clientMenu () {
 
 void adminMenu () {
     int choice;
+    string adminPasscode = "6767";
     
     do {
         cout << "======== ADMIN MENU ========" << endl;
@@ -331,7 +337,11 @@ void adminMenu () {
         cout << "[3] Delete/Deactivate Account" << endl;
         cout << "[4] ATM Cash Refill" << endl;
         cout << "[5] ATM Status" << endl;
-        cout << "[6] Exit" << endl;
+        cout << "[6] Change Admin Passcode" << endl;
+        cout << "[7] View list of Admin Users" << endl;
+        cout << "[8] Reset Account Password" << endl;
+        cout << "[9] Return to Login Menu" << endl;
+        cout << "[10] End Program" << endl;
         cout << "Select Choice: ";
         cin >> choice;
         cout << "============================" << endl;
@@ -437,9 +447,67 @@ void adminMenu () {
             
             
         }
-        
-        
-        
-    } while (choice != 6);
+
+        else if (choice == 6) {
+            string currentPass, newPass;
+
+
+            cout << "Enter Admin Passcode: ";
+            cin >> currentPass;
+
+            if (currentPass != adminPasscode){
+                cout << "Incorrect Passcode" << endl;
+            }
+
+            else {
+                cout << "Enter New Admin Passcode: ";
+                cin >> newPass;
+                adminPasscode = newPass;
+
+
+                cout << "Admin Passcode Changed Successfully!" << endl;
+            }
+        }
+
+        else if (choice == 7){
+            cout << "========= LIST OF ADMIN USERS =========" << endl;
+            for(const auto &admin : adminUsers){
+                cout << admin << endl;
+            }
+        }
+
+        else if (choice == 8){
+            string card;
+            cout << "Enter Card Number of Accout to Reset PIN: ";
+            cin >> card;
+
+            int accountIndex = -1;
+            for (int i = 0; i < cardNumbers.size(); i++){
+                if(cardNumbers[i] == card){
+                    accountIndex = i;
+                    break;
+                }
+            }
+            if (accountIndex == -1){
+                cout << "Account Not Found" << endl;
+            }
+
+            else {
+                string newPIN;
+                cout << "Enter New PIN: ";
+                cin >> newPIN;
+                encodedPINs[accountIndex] = encodeString(newPIN);
+                cout << "Account PIN  has been reset Successfully!" << endl;
+            }
+
+        }
+        else if (choice == 9){
+            login();
+        }
+
+
+    
+    } while (choice != 10);
+    cout << "Ending Program, Goodbye!" << endl;
     
 }
