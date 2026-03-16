@@ -252,13 +252,13 @@ vector<int>& transactionQuantities){
         clearScreen();
         cout << "====================================" << endl;
         cout << "====================================" << endl;
-        typeText("===         AT THE MOMENT        ===\n");
+        typeText("===       ABM BANK MACHINE       ===\n");
         typeText("===         -------------        ===\n");
         typeText("===          ATM MACHINE         ===\n");
         cout << "====================================" << endl;
         cout << "====================================" << endl;
         
-        typeText("\n======= WELCOME TO ATM SYSTEM =======");
+        typeText("\n======= WELCOME TO ABM ATM SYSTEM =======");
         cout << "\n[1] Client Menu";
         cout << "    [2] Admin Menu\n";
         cout << "\n            [3] Exit" << endl;
