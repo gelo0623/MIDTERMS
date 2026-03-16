@@ -253,7 +253,7 @@ vector<int>& transactionQuantities){
         cout << "====================================" << endl;
         cout << "====================================" << endl;
         typeText("===       ABM BANK MACHINE       ===\n");
-        typeText("===         -------------        ===\n");
+        typeText("===       ----------------       ===\n");
         typeText("===          ATM MACHINE         ===\n");
         cout << "====================================" << endl;
         cout << "====================================" << endl;
